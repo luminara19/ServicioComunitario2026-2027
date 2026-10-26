@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Logo Cámara de Construcción Falcón">
+  <rect width="48" height="48" rx="11" fill="#0b57a4"/>
+  <rect x="9" y="25" width="7" height="13" rx="1.6" fill="#ffffff" opacity="0.6"/>
+  <rect x="20.5" y="18" width="7" height="20" rx="1.6" fill="#ffffff" opacity="0.82"/>
+  <rect x="32" y="11" width="7" height="27" rx="1.6" fill="#ffffff"/>
+  <path d="M7 41.5h34" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+</svg>
