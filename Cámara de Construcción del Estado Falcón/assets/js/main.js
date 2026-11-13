@@ -80,24 +80,6 @@
     }
   }
 
-  /* ---------- Filtros de noticias ---------- */
-  var botonesFiltro = document.querySelectorAll(".filtro-btn");
-  if (botonesFiltro.length) {
-    var noticias = document.querySelectorAll("[data-categoria]");
-    botonesFiltro.forEach(function (boton) {
-      boton.addEventListener("click", function () {
-        var categoria = boton.dataset.filtro;
-        botonesFiltro.forEach(function (b) {
-          b.setAttribute("aria-pressed", String(b === boton));
-        });
-        noticias.forEach(function (n) {
-          var coincide =
-            categoria === "todas" || n.dataset.categoria === categoria;
-          n.hidden = !coincide;
-        });
-      });
-    });
-  }
 
   /* ---------- Formularios: validación + anti-spam + confirmación ---------- */
   var correoRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
