@@ -80,123 +80,124 @@
     }
   }
 
+  /* ---------- Año del pie de página ---------- */
+  var anio = document.querySelector("[data-anio]");
+  if (anio) anio.textContent = new Date().getFullYear();
 
-  /* ---------- Formularios: validación + anti-spam + confirmación ---------- */
-  var correoRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+  /* =========================================================
+NAVEGACIÓN ENTRE BLOQUES Y SWIPE
+========================================================= */
 
-  function mostrarError(campo, mensaje) {
-    campo.setAttribute("aria-invalid", "true");
-    var contenedor = campo.closest(".campo") || campo.parentElement;
-    var error = contenedor.querySelector(".error-msg");
-    if (error) {
-      error.textContent = mensaje;
-      error.classList.add("is-visible");
-    }
-  }
+(function initNavegacionBloques() {
+  
+  // Navegación con botones Anterior/Siguiente
+  document.querySelectorAll("[data-ir-a]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var targetId = btn.getAttribute("data-ir-a");
+      var drawer = btn.closest(".drawer");
+      if (!drawer) return;
 
-  function limpiarErrores(form) {
-    form.querySelectorAll("[aria-invalid]").forEach(function (campo) {
-      campo.removeAttribute("aria-invalid");
-    });
-    form.querySelectorAll(".error-msg.is-visible").forEach(function (error) {
-      error.classList.remove("is-visible");
-      error.textContent = "";
-    });
-  }
-
-  // Desafío matemático sencillo: los bots que no ejecutan JS no pueden responderlo.
-  function prepararVerificacion(form) {
-    var contenedor = form.querySelector(".verificacion");
-    if (!contenedor) return null;
-    var a = Math.floor(Math.random() * 8) + 2;
-    var b = Math.floor(Math.random() * 8) + 1;
-    var pregunta = contenedor.querySelector(".verificacion__pregunta");
-    var entrada = contenedor.querySelector("input");
-    if (pregunta) pregunta.textContent = a + " + " + b + " =";
-    if (entrada) entrada.value = "";
-    return { a: a, b: b, campo: entrada };
-  }
-
-  document.querySelectorAll("form[data-formulario]").forEach(function (form) {
-    var verificacion = prepararVerificacion(form);
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      limpiarErrores(form);
-
-      // Trampa anti-spam: si un robot la rellena, se ignora el envío en silencio.
-      var trampa = form.querySelector(".trampa-antispam input");
-      if (trampa && trampa.value.trim() !== "") {
-        return;
-      }
-
-      var primerError = null;
-
-      // Campos obligatorios
-      form.querySelectorAll("[required]").forEach(function (campo) {
-        if (campo.type === "checkbox") {
-          if (!campo.checked) {
-            mostrarError(campo, "Debes aceptar esta condición para continuar.");
-            primerError = primerError || campo;
-          }
-          return;
-        }
-        var valor = campo.value.trim();
-        if (!valor) {
-          mostrarError(campo, "Este campo es obligatorio.");
-          primerError = primerError || campo;
-          return;
-        }
-        if (campo.type === "email" && !correoRegex.test(valor)) {
-          mostrarError(campo, "Ingresa un correo electrónico válido.");
-          primerError = primerError || campo;
-        }
+      // Desactivar todas las pestañas y paneles
+      drawer.querySelectorAll(".drawer__tab").forEach(function (t) {
+        t.classList.remove("is-active");
+        t.setAttribute("aria-selected", "false");
+      });
+      drawer.querySelectorAll(".drawer__panel").forEach(function (p) {
+        p.classList.remove("is-active");
       });
 
-      // Verificación matemática
-      if (verificacion && verificacion.campo) {
-        var respuesta = verificacion.campo.value.trim();
-        var esperado = verificacion.a + verificacion.b;
-        if (respuesta === "" || Number(respuesta) !== esperado) {
-          mostrarError(
-            verificacion.campo,
-            "Respuesta incorrecta. Intenta de nuevo."
-          );
-          primerError = primerError || verificacion.campo;
+      // Activar el panel target
+      var panel = drawer.querySelector("#" + targetId);
+      if (panel) {
+        panel.classList.add("is-active");
+        
+        // Activar la pestaña correspondiente
+        var tab = drawer.querySelector('[data-tab="' + targetId + '"]');
+        if (tab) {
+          tab.classList.add("is-active");
+          tab.setAttribute("aria-selected", "true");
         }
-      }
 
-      if (primerError) {
-        primerError.focus();
-        primerError.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
-        return;
-      }
-
-      // Confirmación (aquí se conectaría el envío real por correo / backend / CMS)
-      var aviso = form.querySelector(".aviso-exito");
-      if (aviso) {
-        aviso.classList.add("is-visible");
-        aviso.setAttribute("tabindex", "-1");
-        aviso.focus();
-        aviso.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
-      }
-      form.reset();
-      verificacion = prepararVerificacion(form);
-    });
-
-    // Quitar el error en cuanto el usuario corrige un campo
-    form.addEventListener("input", function (e) {
-      var campo = e.target;
-      if (campo.hasAttribute("aria-invalid")) {
-        campo.removeAttribute("aria-invalid");
-        var contenedor = campo.closest(".campo") || campo.parentElement;
-        var error = contenedor && contenedor.querySelector(".error-msg");
-        if (error) error.classList.remove("is-visible");
+        // Scroll al tope
+        var cuerpo = drawer.querySelector(".drawer__cuerpo");
+        if (cuerpo) cuerpo.scrollTop = 0;
       }
     });
   });
 
-  /* ---------- Año del pie de página ---------- */
-  var anio = document.querySelector("[data-anio]");
-  if (anio) anio.textContent = new Date().getFullYear();
+  // SWIPE en móvil para navegar entre bloques
+  var drawers = document.querySelectorAll(".drawer");
+  drawers.forEach(function (drawer) {
+    var touchStartX = 0;
+    var touchEndX = 0;
+    var minSwipeDistance = 50;
+
+    drawer.addEventListener("touchstart", function (e) {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    drawer.addEventListener("touchend", function (e) {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+      var diff = touchStartX - touchEndX;
+      var panelActivo = drawer.querySelector(".drawer__panel.is-active");
+      if (!panelActivo) return;
+
+      var tabs = Array.from(drawer.querySelectorAll(".drawer__tab"));
+      var indiceActual = tabs.findIndex(function (t) {
+        return t.getAttribute("data-tab") === panelActivo.id;
+      });
+
+      if (Math.abs(diff) < minSwipeDistance) return;
+
+      // Swipe izquierda (siguiente)
+      if (diff > 0 && indiceActual < tabs.length - 1) {
+        var siguienteTab = tabs[indiceActual + 1];
+        var siguienteId = siguienteTab.getAttribute("data-tab");
+        var btnSiguiente = drawer.querySelector('[data-ir-a="' + siguienteId + '"]');
+        if (btnSiguiente) btnSiguiente.click();
+      }
+      // Swipe derecha (anterior)
+      else if (diff < 0 && indiceActual > 0) {
+        var anteriorTab = tabs[indiceActual - 1];
+        var anteriorId = anteriorTab.getAttribute("data-tab");
+        var btnAnterior = drawer.querySelector('[data-ir-a="' + anteriorId + '"]');
+        if (btnAnterior) btnAnterior.click();
+      }
+    }
+  });
+
+  // Navegación con teclado (flechas izquierda/derecha)
+  document.addEventListener("keydown", function (e) {
+    var drawerAbierto = document.querySelector(".drawer.is-open");
+    if (!drawerAbierto) return;
+
+    var panelActivo = drawerAbierto.querySelector(".drawer__panel.is-active");
+    if (!panelActivo) return;
+
+    var tabs = Array.from(drawerAbierto.querySelectorAll(".drawer__tab"));
+    var indiceActual = tabs.findIndex(function (t) {
+      return t.getAttribute("data-tab") === panelActivo.id;
+    });
+
+    if (e.key === "ArrowRight" && indiceActual < tabs.length - 1) {
+      var siguienteTab = tabs[indiceActual + 1];
+      var siguienteId = siguienteTab.getAttribute("data-tab");
+      var btnSiguiente = drawerAbierto.querySelector('[data-ir-a="' + siguienteId + '"]');
+      if (btnSiguiente) btnSiguiente.click();
+    } else if (e.key === "ArrowLeft" && indiceActual > 0) {
+      var anteriorTab = tabs[indiceActual - 1];
+      var anteriorId = anteriorTab.getAttribute("data-tab");
+      var btnAnterior = drawerAbierto.querySelector('[data-ir-a="' + anteriorId + '"]');
+      if (btnAnterior) btnAnterior.click();
+    }
+  });
+
 })();
+
+})();
+
+
