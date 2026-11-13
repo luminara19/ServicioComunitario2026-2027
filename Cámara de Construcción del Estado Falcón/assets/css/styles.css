@@ -481,7 +481,7 @@ hr {
   border-radius: var(--radio);
   box-shadow: var(--sombra-suave);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   overflow: hidden;
 }
 
@@ -1353,44 +1353,6 @@ hr {
    ESTILO HÍBRIDO INSTITUCIONAL
    ========================================================= */
 
-/* Buscador del hero (estilo referencia) */
-.hero__buscador {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: #fff;
-  border-radius: 999px;
-  padding: 0.45rem 0.45rem 0.45rem 1.3rem;
-  max-width: 520px;
-  box-shadow: 0 12px 30px rgba(11, 36, 69, 0.25);
-  margin-bottom: 1.6rem;
-}
-
-.hero__buscador input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  outline: none;
-  font: inherit;
-  font-size: 0.98rem;
-  color: var(--gris-900);
-  background: transparent;
-}
-
-.hero__buscador button {
-  border: 0;
-  background: var(--azul);
-  color: #fff;
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
-  font-size: 0.92rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.hero__buscador button:hover { background: var(--azul-vivo); }
 
 /* Píldoras temáticas (referencia) */
 .pildoras {
