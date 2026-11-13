@@ -1114,21 +1114,42 @@ hr {
 
 .boton-whatsapp svg { width: 30px; height: 30px; }
 
-@media (max-width: 480px) {
-  .boton-whatsapp { width: 52px; height: 52px; right: 1rem; bottom: 1rem; }
+
+/* =========================================================
+SECCIÓN: Presentación del programa (imagen + título)
+========================================================= */
+.programa-presentacion {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+}
+.programa-presentacion__imagen {
+  background: #fff;
+  border: 1px solid var(--gris-200);
+  border-radius: var(--radio);
+  padding: 2rem;
+  box-shadow: var(--sombra-suave);
+  display: grid;
+  place-items: center;
+}
+.programa-presentacion__imagen img {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  filter: drop-shadow(0 12px 26px rgba(11, 36, 69, 0.16));
+}
+.programa-presentacion__texto .eyebrow {
+  margin-bottom: 0.6rem;
+}
+.programa-presentacion__texto h2 {
+  margin-bottom: 1rem;
+}
+.programa-presentacion__texto .lead {
+  margin-bottom: 1.25rem;
 }
 
-/* ---------- Preferencia de movimiento reducido ---------- */
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    transition-duration: 0.001ms !important;
-  }
-  .reveal { opacity: 1; transform: none; }
-}
+
 
 /* =========================================================
    ESTILO HÍBRIDO INSTITUCIONAL
@@ -1169,71 +1190,6 @@ hr {
   filter: drop-shadow(0 12px 26px rgba(11, 36, 69, 0.16));
 }
 
-/* Tarjetas de cursos (referencia) */
-.curso {
-  position: relative;
-  background: #fff;
-  border: 1px solid var(--gris-200);
-  border-radius: var(--radio);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-
-.curso:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--sombra-card);
-  border-color: var(--azul-borde);
-}
-
-.curso__media {
-  aspect-ratio: 16 / 10;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  position: relative;
-  background: linear-gradient(135deg, var(--azul-oscuro), var(--azul));
-}
-
-.curso__media svg { width: 56px; height: 56px; opacity: 0.95; position: relative; z-index: 1; }
-
-.curso__media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1.2px, transparent 1.3px);
-  background-size: 16px 16px;
-}
-
-.badge-curso {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  z-index: 2;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.85rem;
-  border-radius: 999px;
-  color: #fff;
-}
-
-.badge-curso--abiertas { background: var(--azul); }
-.badge-curso--vivo { background: #1f7a4d; }
-
-.curso__cuerpo {
-  padding: 1.3rem 1.4rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.curso__cuerpo h3 { font-size: 1.1rem; margin-bottom: 0.45rem; }
-.curso__cuerpo p { font-size: 0.93rem; color: var(--gris-600); }
-.curso__cuerpo .btn { margin-top: auto; }
 
 /* =========================================================
    RESPONSIVE
