@@ -16,12 +16,12 @@
   <meta property="og:url" content="https://camaraconstruccionfalcon.org.ve/programas.html">
 
   <meta name="theme-color" content="#0b57a4">
-  <link rel="icon" type="image/png" href="assets/img/logo-edificios.png">
+  <link rel="icon" type="image/png" href="images/logo-edificios.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="programas.css">
 </head>
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
@@ -50,7 +50,7 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="index.html" aria-label="Cámara de Construcción Falcón — Ir al inicio">
-        <img class="brand__mark" src="assets/img/logo-edificios.png" alt="" width="52" height="52">
+        <img class="brand__mark" src="images/logo-edificios.png" alt="" width="52" height="52">
         <span>
           <span class="brand__nombre">Cámara de la Construcción</span>
           <span class="brand__lema">Falcón · Venezuela</span>
@@ -99,7 +99,7 @@
   <div class="container">
     <div class="programa-escudo">
       <div class="programa-escudo__imagen">
-        <img src="Cámara de Construcción del Estado Falcón\assets\img\sello-oficial.jpg" alt="Sello oficial del Programa Institucional de Desarrollo Urbano, Comunitario y Deportivo – Municipio Carirubana" />
+        <img src="images/sello-oficial.png" alt="Sello oficial del Programa Institucional de Desarrollo Urbano, Comunitario y Deportivo – Municipio Carirubana" />
       </div>
       <div class="programa-escudo__texto">
         <span class="eyebrow">Municipio Carirubana · 2026</span>
@@ -124,7 +124,7 @@
           <h2>Cuestionario de diagnostico participativo y perfil de liderazgo Municipal</h2>
           <p class="lead">Es una consulta ciudadana anónima con el fin de realizar un diagnóstico general de las necesidades reales de las parroquias del Municipio Carirubana.</p>
           <div style="margin-top: 1.5rem;">
-            <button type="button" class="btn btn--primario" data-drawer-abrir="drawer-cuestionario">
+            <button type="button" class="btn btn--primario" data-modal-abrir="modal-diagnostico">
               Empezar
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
@@ -138,9 +138,9 @@
         <div class="section-header center">
           <span class="eyebrow">¿En qué consiste?</span>
           <h2>Formulario de registro y postulación sectorial</h2>
-          <p class="lead">A través de este formulario podrás postular oficialmente a tu comunidad para solicitar el apoyo constitucional y técnico de la Cámara de la Construcción.p>
+          <p class="lead">A través de este formulario podrás postular oficialmente a tu comunidad para solicitar el apoyo constitucional y técnico de la Cámara de la Construcción.</p>
           <div style="margin-top: 1.5rem;">
-            <button type="button" class="btn btn--primario" data-drawer-abrir="drawer-cuestionario">
+            <button type="button" class="btn btn--primario" data-modal-abrir="modal-postulacion">
               Empezar
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
@@ -148,6 +148,388 @@
         </div>
       </div>
     </section>
+
+  <!-- ===== Ventanas flotantes de formularios ===== -->
+  <div class="modal-overlay" data-modal-overlay></div>
+
+  <div class="modal" id="modal-diagnostico" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-diagnostico">
+    <div class="modal__caja">
+      <div class="modal__cabecera">
+        <h2 id="titulo-modal-diagnostico">Cuestionario de diagnóstico participativo y liderazgo municipal</h2>
+        <button class="modal__cerrar" type="button" data-modal-cerrar aria-label="Cerrar formulario">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal__cuerpo">
+        <div class="aviso-exito" role="status">
+          <strong>Solicitud registrada</strong>
+          <p>Tus respuestas quedaron registradas exitosamente</p>
+        </div>
+        <form data-formulario>
+          <div class="form-grid">
+              <p class="form-bloque">Bloque I · Perfil territorial y socioeconómico</p>
+              <fieldset class="campo campo--completo">
+                <legend>Parroquia a la que pertenece <span class="obligatorio">*</span></legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="diag-parroquia" value="Carirubana" required><span>Carirubana</span></label>
+                  <label class="opcion"><input type="radio" name="diag-parroquia" value="Norte"><span>Norte</span></label>
+                  <label class="opcion"><input type="radio" name="diag-parroquia" value="Punta Cardón"><span>Punta Cardón</span></label>
+                  <label class="opcion"><input type="radio" name="diag-parroquia" value="Santa Ana"><span>Santa Ana</span></label>
+                </div>
+              </fieldset>
+              <div class="campo campo--completo">
+                <label for="diag-sector">Sector, comunidad o urbanización específica <span class="obligatorio">*</span></label>
+                <input id="diag-sector" name="diag-sector" type="text" placeholder="Ej. Casco Central, Barrio Carirubana, Bella Vista" required>
+              </div>
+              <fieldset class="campo campo--completo">
+                <legend>Edad del encuestado(a) <span class="obligatorio">*</span></legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="diag-edad" value="18 – 29 años" required><span>18 – 29 años</span></label>
+                  <label class="opcion"><input type="radio" name="diag-edad" value="30 – 49 años"><span>30 – 49 años</span></label>
+                  <label class="opcion"><input type="radio" name="diag-edad" value="50 – 64 años"><span>50 – 64 años</span></label>
+                  <label class="opcion"><input type="radio" name="diag-edad" value="65 años o más"><span>65 años o más</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="campo campo--completo">
+                <legend>Ocupación principal <span class="obligatorio">*</span></legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="diag-ocupacion" value="Empleado(a) público / privado" required><span>Empleado(a) público / privado</span></label>
+                  <label class="opcion"><input type="radio" name="diag-ocupacion" value="Comerciante / Emprendedor(a)"><span>Comerciante / Emprendedor(a)</span></label>
+                  <label class="opcion"><input type="radio" name="diag-ocupacion" value="Trabajo independiente / Oficio libre"><span>Trabajo independiente / Oficio libre</span></label>
+                  <label class="opcion"><input type="radio" name="diag-ocupacion" value="Estudiante"><span>Estudiante</span></label>
+                  <label class="opcion"><input type="radio" name="diag-ocupacion" value="Ama de casa / Labores del hogar"><span>Ama de casa / Labores del hogar</span></label>
+                  <label class="opcion"><input type="radio" name="diag-ocupacion" value="Jubilado(a) / Pensionado(a)"><span>Jubilado(a) / Pensionado(a)</span></label>
+                  <label class="opcion"><input type="radio" name="diag-ocupacion" value="Desempleado(a)"><span>Desempleado(a)</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="campo campo--completo">
+                <legend>Fuentes e índole de los ingresos en el hogar (puede marcar varias)</legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="checkbox" name="diag-ingresos" value="Sueldo / Salario fijo (sector público o privado)"><span>Sueldo / Salario fijo (sector público o privado)</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-ingresos" value="Trabajo independiente / Oficios"><span>Trabajo independiente / Oficios</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-ingresos" value="Emprendimiento / Comercio propio o ventas"><span>Emprendimiento / Comercio propio o ventas</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-ingresos" value="Remesas desde el exterior"><span>Remesas desde el exterior</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-ingresos" value="Jubilaciones, pensiones o ayudas públicas"><span>Jubilaciones, pensiones o ayudas públicas</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-ingresos" value="Rentas o alquileres"><span>Rentas o alquileres</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-ingresos" value="Otro"><span>Otro</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="campo campo--completo">
+                <legend>¿Cuántas personas aportan ingresos económicos regularmente a su hogar? <span class="obligatorio">*</span></legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="diag-aportantes" value="1 persona" required><span>1 persona</span></label>
+                  <label class="opcion"><input type="radio" name="diag-aportantes" value="2 personas"><span>2 personas</span></label>
+                  <label class="opcion"><input type="radio" name="diag-aportantes" value="3 personas"><span>3 personas</span></label>
+                  <label class="opcion"><input type="radio" name="diag-aportantes" value="4 personas o más"><span>4 personas o más</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="campo campo--completo">
+                <legend>¿Cuántas personas viven en su hogar y se benefician de esos ingresos? <span class="obligatorio">*</span></legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="diag-habitantes" value="1 a 2 personas" required><span>1 a 2 personas</span></label>
+                  <label class="opcion"><input type="radio" name="diag-habitantes" value="3 a 4 personas"><span>3 a 4 personas</span></label>
+                  <label class="opcion"><input type="radio" name="diag-habitantes" value="5 a 6 personas"><span>5 a 6 personas</span></label>
+                  <label class="opcion"><input type="radio" name="diag-habitantes" value="7 personas o más"><span>7 personas o más</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="campo campo--completo">
+                <legend>En una escala del 1 al 5, ¿cómo evalúa la calidad de vida general en el municipio Carirubana? <span class="obligatorio">*</span></legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="diag-calidad" value="1 (Muy mala)" required><span>1 (Muy mala)</span></label>
+                  <label class="opcion"><input type="radio" name="diag-calidad" value="2 (Mala)"><span>2 (Mala)</span></label>
+                  <label class="opcion"><input type="radio" name="diag-calidad" value="3 (Regular)"><span>3 (Regular)</span></label>
+                  <label class="opcion"><input type="radio" name="diag-calidad" value="4 (Buena)"><span>4 (Buena)</span></label>
+                  <label class="opcion"><input type="radio" name="diag-calidad" value="5 (Excelente)"><span>5 (Excelente)</span></label>
+                </div>
+              </fieldset>
+              <p class="form-bloque">Bloque II · Evaluación de servicios públicos</p>
+              <div class="campo">
+                <label for="serv-1">Suministro de agua potable (por tubería / ciclos)</label>
+                <select id="serv-1" name="serv-1">
+                  <option value="">Selecciona una opción</option>
+                  <option>Deficiente</option>
+                  <option>Regular</option>
+                  <option>Aceptable</option>
+                  <option>Bueno</option>
+                  <option>No sabe / No responde</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label for="serv-2">Recolección de aseo urbano / basura</label>
+                <select id="serv-2" name="serv-2">
+                  <option value="">Selecciona una opción</option>
+                  <option>Deficiente</option>
+                  <option>Regular</option>
+                  <option>Aceptable</option>
+                  <option>Bueno</option>
+                  <option>No sabe / No responde</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label for="serv-3">Alumbrado público y red eléctrica</label>
+                <select id="serv-3" name="serv-3">
+                  <option value="">Selecciona una opción</option>
+                  <option>Deficiente</option>
+                  <option>Regular</option>
+                  <option>Aceptable</option>
+                  <option>Bueno</option>
+                  <option>No sabe / No responde</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label for="serv-4">Vialidad, asfaltado y semaforización</label>
+                <select id="serv-4" name="serv-4">
+                  <option value="">Selecciona una opción</option>
+                  <option>Deficiente</option>
+                  <option>Regular</option>
+                  <option>Aceptable</option>
+                  <option>Bueno</option>
+                  <option>No sabe / No responde</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label for="serv-5">Transporte público y rutas</label>
+                <select id="serv-5" name="serv-5">
+                  <option value="">Selecciona una opción</option>
+                  <option>Deficiente</option>
+                  <option>Regular</option>
+                  <option>Aceptable</option>
+                  <option>Bueno</option>
+                  <option>No sabe / No responde</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label for="serv-6">Seguridad ciudadana y patrullaje policial</label>
+                <select id="serv-6" name="serv-6">
+                  <option value="">Selecciona una opción</option>
+                  <option>Deficiente</option>
+                  <option>Regular</option>
+                  <option>Aceptable</option>
+                  <option>Bueno</option>
+                  <option>No sabe / No responde</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label for="serv-7">Mantenimiento de plazas, parques y áreas deportivas</label>
+                <select id="serv-7" name="serv-7">
+                  <option value="">Selecciona una opción</option>
+                  <option>Deficiente</option>
+                  <option>Regular</option>
+                  <option>Aceptable</option>
+                  <option>Bueno</option>
+                  <option>No sabe / No responde</option>
+                </select>
+              </div>
+              <p class="form-bloque">Bloque III · Perfil y atributos del líder municipal</p>
+              <fieldset class="campo campo--completo">
+                <legend>¿Cuál debe ser el perfil o formación principal del próximo Alcalde del Municipio Carirubana? (una sola opción) <span class="obligatorio">*</span></legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="diag-perfil" value="Experto en gestión pública, planificación y administración eficiente de recursos" required><span>Experto en gestión pública, planificación y administración eficiente de recursos</span></label>
+                  <label class="opcion"><input type="radio" name="diag-perfil" value="Con trayectoria en las bases, conocedor directo de los sectores populares"><span>Con trayectoria en las bases, conocedor directo de los sectores populares</span></label>
+                  <label class="opcion"><input type="radio" name="diag-perfil" value="Con visión de desarrollo económico, atracción de inversión y generación de empleo"><span>Con visión de desarrollo económico, atracción de inversión y generación de empleo</span></label>
+                  <label class="opcion"><input type="radio" name="diag-perfil" value="Con experiencia legislativa, de negociación e intermediación de alto nivel"><span>Con experiencia legislativa, de negociación e intermediación de alto nivel</span></label>
+                  <label class="opcion"><input type="radio" name="diag-perfil" value="Enfocado en la formación, la institucionalidad, la cultura y los valores"><span>Enfocado en la formación, la institucionalidad, la cultura y los valores</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="campo campo--completo">
+                <legend>¿Qué cualidad o atributo personal considera MÁS IMPORTANTE en el líder municipal? (máximo dos)</legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="checkbox" name="diag-cualidades" value="Honestidad y transparencia en el uso del presupuesto municipal"><span>Honestidad y transparencia en el uso del presupuesto municipal</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-cualidades" value="Capacidad de resolver problemas con rapidez y eficacia"><span>Capacidad de resolver problemas con rapidez y eficacia</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-cualidades" value="Cercanía y presencia constante en las calles y parroquias"><span>Cercanía y presencia constante en las calles y parroquias</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-cualidades" value="Visión de futuro y modernización para Punto Fijo y sus parroquias"><span>Visión de futuro y modernización para Punto Fijo y sus parroquias</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-cualidades" value="Capacidad de diálogo y articulación con todos los sectores sociales"><span>Capacidad de diálogo y articulación con todos los sectores sociales</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="campo campo--completo">
+                <legend>En la dinámica de trabajo de la Alcaldía, ¿qué estilo de gestión prefiere? (una sola opción) <span class="obligatorio">*</span></legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="diag-estilo" value="Un perfil técnico centrado en resultados, eficiencia y obras de infraestructura" required><span>Un perfil técnico centrado en resultados, eficiencia y obras de infraestructura</span></label>
+                  <label class="opcion"><input type="radio" name="diag-estilo" value="Un perfil territorial permanente en los sectores, resolviendo mano a mano con la gente"><span>Un perfil territorial permanente en los sectores, resolviendo mano a mano con la gente</span></label>
+                  <label class="opcion"><input type="radio" name="diag-estilo" value="Un perfil mixto que equilibre la planificación gerencial con la presencia comunitaria"><span>Un perfil mixto que equilibre la planificación gerencial con la presencia comunitaria</span></label>
+                </div>
+              </fieldset>
+              <p class="form-bloque">Bloque IV · Priorización de problemas</p>
+              <fieldset class="campo campo--completo">
+                <legend>Seleccione las tres (3) áreas prioritarias que la gestión municipal debe atender con mayor urgencia</legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="checkbox" name="diag-prioridades" value="Solución al problema del agua y mejora de los ciclos de suministro"><span>Solución al problema del agua y mejora de los ciclos de suministro</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-prioridades" value="Reparación de calles, bacheo y asfaltado"><span>Reparación de calles, bacheo y asfaltado</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-prioridades" value="Seguridad ciudadana y vigilancia policial"><span>Seguridad ciudadana y vigilancia policial</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-prioridades" value="Reactivación económica, apoyo al comercio y zonas industriales/comerciales"><span>Reactivación económica, apoyo al comercio y zonas industriales/comerciales</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-prioridades" value="Recuperación de canchas, espacios deportivos y culturales"><span>Recuperación de canchas, espacios deportivos y culturales</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-prioridades" value="Salud municipal y fortalecimiento de ambulatorios"><span>Salud municipal y fortalecimiento de ambulatorios</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-prioridades" value="Limpieza, saneamiento y gestión ambiental / basura"><span>Limpieza, saneamiento y gestión ambiental / basura</span></label>
+                </div>
+              </fieldset>
+              <div class="campo campo--completo">
+                <label for="diag-problema">¿Cuál considera que es el problema específico MÁS GRAVE de su sector o parroquia? <span class="obligatorio">*</span></label>
+                <textarea id="diag-problema" name="diag-problema" placeholder="Describe el problema principal" required></textarea>
+              </div>
+              <p class="form-bloque">Bloque V · Desarrollo económico y juventud</p>
+              <fieldset class="campo campo--completo">
+                <legend>¿Qué iniciativa considera indispensable para impulsar la economía familiar y el empleo en Carirubana?</legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="checkbox" name="diag-economia" value="Atención y protección social (adultos mayores, juventud, mujeres, sectores vulnerables)"><span>Atención y protección social (adultos mayores, juventud, mujeres, sectores vulnerables)</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-economia" value="Créditos, insumos y capacitación para emprendedores y microempresarios"><span>Créditos, insumos y capacitación para emprendedores y microempresarios</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-economia" value="Simplificación de trámites e incentivos fiscales a comerciantes"><span>Simplificación de trámites e incentivos fiscales a comerciantes</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-economia" value="Alianzas con el sector privado e industrias para la creación de empleo"><span>Alianzas con el sector privado e industrias para la creación de empleo</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-economia" value="Impulso al turismo, gastronomía y comercio local"><span>Impulso al turismo, gastronomía y comercio local</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-economia" value="Mercados comunitarios y ferias de abastecimiento a precios accesibles"><span>Mercados comunitarios y ferias de abastecimiento a precios accesibles</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="campo campo--completo">
+                <legend>¿Qué tipo de proyectos hacen falta para impulsar a la juventud en su parroquia?</legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="checkbox" name="diag-juventud" value="Recuperación y alumbrado de instalaciones deportivas"><span>Recuperación y alumbrado de instalaciones deportivas</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-juventud" value="Capacitación técnica, oficios productivos y tecnología"><span>Capacitación técnica, oficios productivos y tecnología</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-juventud" value="Programas culturales, artísticos y musicales"><span>Programas culturales, artísticos y musicales</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-juventud" value="Torneos deportivos interparroquiales continuos"><span>Torneos deportivos interparroquiales continuos</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-juventud" value="Espacios comunitarios con conectividad a internet / bibliotecas digitales"><span>Espacios comunitarios con conectividad a internet / bibliotecas digitales</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="campo campo--completo">
+                <legend>¿A través de qué vía preferiría participar en las decisiones de la gestión municipal?</legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="checkbox" name="diag-participacion" value="Asambleas comunitarias y presupuestos participativos"><span>Asambleas comunitarias y presupuestos participativos</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-participacion" value="Consultas digitales / Encuestas por redes sociales"><span>Consultas digitales / Encuestas por redes sociales</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-participacion" value="Atención directa mediante consejos comunales / voceros de zona"><span>Atención directa mediante consejos comunales / voceros de zona</span></label>
+                  <label class="opcion"><input type="checkbox" name="diag-participacion" value="Aplicación móvil o WhatsApp institucional para reportes directos"><span>Aplicación móvil o WhatsApp institucional para reportes directos</span></label>
+                </div>
+              </fieldset>
+              <p class="form-bloque">Bloque VI · Participación y propuestas</p>
+              <div class="campo campo--completo">
+                <label for="diag-propuesta">Si pudiera proponer una sola obra o proyecto concreto para su parroquia en el nuevo Plan de Gobierno, ¿cuál sería? <span class="obligatorio">*</span></label>
+                <textarea id="diag-propuesta" name="diag-propuesta" placeholder="Describe la obra o proyecto" required></textarea>
+              </div>
+          </div>
+          <div class="formulario__pie">
+            <button class="btn btn--primario" type="submit">Enviar cuestionario</button>
+            <p class="ayuda">Solo texto: no se adjuntan documentos ni archivos.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-postulacion" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-postulacion">
+    <div class="modal__caja">
+      <div class="modal__cabecera">
+        <h2 id="titulo-modal-postulacion">Planilla de registro y postulación sectorial</h2>
+        <button class="modal__cerrar" type="button" data-modal-cerrar aria-label="Cerrar formulario">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal__cuerpo">
+        <div class="aviso-exito" role="status">
+          <strong>Solicitud registrada</strong>
+          <p>Su solicitud fue registrada exitosamente.</p>
+        </div>
+        <form data-formulario>
+          <div class="form-grid">
+              <p class="form-bloque">1 · Datos de identificación del sector</p>
+              <div class="campo">
+                <label for="post-parroquia">Parroquia <span class="obligatorio">*</span></label>
+                <select id="post-parroquia" name="post-parroquia" required>
+                  <option value="">Selecciona una opción</option>
+                  <option>Carirubana</option>
+                  <option>Norte</option>
+                  <option>Punta Cardón</option>
+                  <option>Santa Ana</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label for="post-fecha">Fecha de solicitud <span class="obligatorio">*</span></label>
+                <input id="post-fecha" name="post-fecha" type="date" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="post-sector">Nombre del sector / urbanización / barrio <span class="obligatorio">*</span></label>
+                <input id="post-sector" name="post-sector" type="text" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="post-direccion">Dirección exacta o punto de referencia principal <span class="obligatorio">*</span></label>
+                <input id="post-direccion" name="post-direccion" type="text" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="post-familias">Cantidad aproximada de familias beneficiadas <span class="obligatorio">*</span></label>
+                <input id="post-familias" name="post-familias" type="text" placeholder="Ej. 120" required>
+              </div>
+              <p class="form-bloque">2 · Voceros o enlaces comunitarios</p>
+              <div class="campo">
+                <label for="post-enlace-nombre">Enlace principal (nombre y apellido) <span class="obligatorio">*</span></label>
+                <input id="post-enlace-nombre" name="post-enlace-nombre" type="text" required>
+              </div>
+              <div class="campo">
+                <label for="post-enlace-cedula">Cédula del enlace principal <span class="obligatorio">*</span></label>
+                <input id="post-enlace-cedula" name="post-enlace-cedula" type="text" placeholder="V-12345678" required>
+              </div>
+              <div class="campo">
+                <label for="post-enlace-telefono">Teléfono / WhatsApp del enlace principal <span class="obligatorio">*</span></label>
+                <input id="post-enlace-telefono" name="post-enlace-telefono" type="text" placeholder="0412-0000000" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="post-enlace-cargo">Cargo o rol en la comunidad <span class="obligatorio">*</span></label>
+                <input id="post-enlace-cargo" name="post-enlace-cargo" type="text" placeholder="Ej. Vocero vecinal, comité de deporte, líder de calle" required>
+              </div>
+              <div class="campo">
+                <label for="post-suplente-nombre">Enlace suplente (nombre y apellido) <span class="obligatorio">*</span></label>
+                <input id="post-suplente-nombre" name="post-suplente-nombre" type="text" required>
+              </div>
+              <div class="campo">
+                <label for="post-suplente-cedula">Cédula del enlace suplente <span class="obligatorio">*</span></label>
+                <input id="post-suplente-cedula" name="post-suplente-cedula" type="text" placeholder="V-12345678" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="post-suplente-telefono">Teléfono / WhatsApp del enlace suplente <span class="obligatorio">*</span></label>
+                <input id="post-suplente-telefono" name="post-suplente-telefono" type="text" placeholder="0412-0000000" required>
+              </div>
+              <p class="form-bloque">3 · Área de atención solicitada</p>
+              <fieldset class="campo campo--completo">
+                <legend>Marque las áreas en las que el sector requiere apoyo institucional</legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="checkbox" name="post-ejes" value="EJE 1 · Diagnóstico técnico e infraestructura comunitaria"><span>EJE 1 · Diagnóstico técnico e infraestructura comunitaria</span></label>
+                  <label class="opcion"><input type="checkbox" name="post-ejes" value="EJE 2 · Responsabilidad social empresarial (RSE) y capacitación"><span>EJE 2 · Responsabilidad social empresarial (RSE) y capacitación</span></label>
+                  <label class="opcion"><input type="checkbox" name="post-ejes" value="EJE 3 · Infraestructura deportiva y juegos comunitarios"><span>EJE 3 · Infraestructura deportiva y juegos comunitarios</span></label>
+                </div>
+              </fieldset>
+              <p class="form-bloque">4 · Problemática o propuesta</p>
+              <div class="campo campo--completo">
+                <label for="post-descripcion">Descripción breve de la problemática o propuesta <span class="obligatorio">*</span></label>
+                <textarea id="post-descripcion" name="post-descripcion" placeholder="Necesidad prioritaria del sector o espacio a postular" required></textarea>
+              </div>
+              <p class="form-bloque">5 · Corresponsabilidad comunitaria</p>
+              <fieldset class="campo campo--completo">
+                <legend>¿Cuenta la comunidad con voluntarios dispuestos a apoyar en jornadas de limpieza, pintura o logística? <span class="obligatorio">*</span></legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="post-voluntarios" value="Sí" required><span>Sí</span></label>
+                  <label class="opcion"><input type="radio" name="post-voluntarios" value="No"><span>No</span></label>
+                </div>
+              </fieldset>
+              <div class="campo campo--completo">
+                <label for="post-voluntarios-cantidad">Cantidad aproximada de voluntarios <span class="obligatorio">*</span></label>
+                <input id="post-voluntarios-cantidad" name="post-voluntarios-cantidad" type="text" placeholder="Ej. 25" inputmode="numeric" required>
+              </div>
+              <fieldset class="campo campo--completo">
+                <legend>¿Existe algún espacio físico (casa comunal, escuela, cancha) disponible para dictar los talleres de capacitación? <span class="obligatorio">*</span></legend>
+                <div class="opciones">
+                  <label class="opcion"><input type="radio" name="post-espacio" value="Sí" required><span>Sí</span></label>
+                  <label class="opcion"><input type="radio" name="post-espacio" value="No"><span>No</span></label>
+                </div>
+              </fieldset>
+              <div class="campo campo--completo">
+                <label for="post-espacio-cual">Indique cuál espacio <span class="obligatorio">*</span></label>
+                <input id="post-espacio-cual" name="post-espacio-cual" type="text" placeholder="Ej. Casa comunal Bella Vista" required>
+              </div>
+          </div>
+          <div class="formulario__pie">
+            <button class="btn btn--primario" type="submit">Enviar planilla</button>
+            <p class="ayuda">Solo texto: no se adjuntan documentos ni archivos.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   </main>
 
    <footer class="site-footer">
@@ -155,7 +537,7 @@
       <div class="footer-grid">
         <div>
           <div class="footer-marca">
-            <img class="brand__mark" src="assets/img/logo-edificios.png" alt="" width="52" height="52">
+            <img class="brand__mark" src="images/logo-edificios.png" alt="" width="52" height="52">
             <span>
               <span class="brand__nombre">Cámara de la Construcción</span>
               <span class="brand__lema">Falcón · Venezuela</span>
@@ -203,7 +585,7 @@
     <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-3.2-.7-2.7-1.1-4.4-3.8-4.5-4-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5s.7 1.8.8 1.9c.1.1.1.3 0 .5s-.2.4-.3.6l-.5.5c-.2.2-.3.4-.1.7.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.7-.1s.7-.9.9-1.2c.2-.3.4-.2.7-.1l1.8.9c.3.2.5.2.6.4.1.1.1.7-.1 1.2z"/></svg>
   </a>
 
-  <script src="assets/js/main.js" defer></script>
+  <script src="programas.js" defer></script>
 
 </body>
 </html>

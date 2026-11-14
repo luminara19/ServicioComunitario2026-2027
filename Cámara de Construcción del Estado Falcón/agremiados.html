@@ -16,12 +16,12 @@
   <meta property="og:url" content="https://camaraconstruccionfalcon.org.ve/agremiados.html">
 
   <meta name="theme-color" content="#0b57a4">
-  <link rel="icon" type="image/png" href="assets/img/logo-edificios.png">
+  <link rel="icon" type="image/png" href="images/logo-edificios.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="agremiados.css">
 </head>
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
@@ -49,7 +49,7 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="index.html" aria-label="Cámara de Construcción Falcón — Ir al inicio">
-        <img class="brand__mark" src="assets/img/logo-edificios.png" alt="" width="52" height="52">
+        <img class="brand__mark" src="images/logo-edificios.png" alt="" width="52" height="52">
         <span>
           <span class="brand__nombre">Cámara de la Construcción</span>
           <span class="brand__lema">Falcón · Venezuela</span>
@@ -128,7 +128,7 @@
 
           <article class="tarjeta tarjeta--acento reveal">
             <span class="etiqueta">Categoría C</span>
-            <h3 style="margin-top:.75rem">Proveedor de bienes y servicios</h3>
+            <h3 style="margin-top:.75rem">Proveedor</h3>
             <p>Distribuidoras de materiales, equipos, herramientas y servicios complementarios.</p>
             <ul class="lista-check" style="margin-top:1rem;font-size:.93rem">
               <li>Exposición en ferias y ruedas de negocio</li>
@@ -166,7 +166,10 @@
                 </div>
                 <div>
                   <h3>Empresa constructora</h3>
-                  <p>Copia de la cédula del representante legal, RIF personal y de empresa, registro mercantil.</p>
+                  <p>Datos del representante legal, RIF empresarial y registro mercantil.</p>
+                  <div class="servicio-lista__acciones">
+                    <button type="button" class="btn btn--primario btn--chico" data-modal-abrir="modal-empresa">Empezar</button>
+                  </div>
                 </div>
               </li>
               <li>
@@ -175,7 +178,10 @@
                 </div>
                 <div>
                   <h3>Profesional independiente</h3>
-                  <p>Copia de la cédula de identidad, RIF, título profesional.</p>
+                  <p>Datos personales y de formación profesional</p>
+                  <div class="servicio-lista__acciones">
+                    <button type="button" class="btn btn--primario btn--chico" data-modal-abrir="modal-profesional">Empezar</button>
+                  </div>
                 </div>
               </li>
               <li>
@@ -184,7 +190,10 @@
                 </div>
                 <div>
                   <h3>Proveedor</h3>
-                  <p>Copia de la del representante del negocio, RIF del negocio, registro mercantil.</p>
+                  <p>Datos del representante del negocio, RIF del negocio y registro mercantil.</p>
+                  <div class="servicio-lista__acciones">
+                    <button type="button" class="btn btn--primario btn--chico" data-modal-abrir="modal-proveedor">Empezar</button>
+                  </div>
                 </div>
               </li>
             </ul>
@@ -196,6 +205,170 @@
       </div>
     </section>
 
+  <!-- ===== Ventanas flotantes de afiliación ===== -->
+  <div class="modal-overlay" data-modal-overlay></div>
+
+  <div class="modal" id="modal-empresa" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-empresa">
+    <div class="modal__caja">
+      <div class="modal__cabecera">
+        <h2 id="titulo-modal-empresa">Registro de empresa constructora</h2>
+        <button class="modal__cerrar" type="button" data-modal-cerrar aria-label="Cerrar formulario">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal__cuerpo">
+<p class="formulario__intro">Datos del representante legal, RIF empresarial y registro mercantil.</p>
+        <div class="aviso-exito" role="status">
+          <strong>Solicitud registrada</strong>
+          <p>Tus datos quedaron registrados exitosamente.</p>
+        </div>
+        <form data-formulario>
+          <div class="form-grid">
+              <p class="form-bloque">Datos personales</p>
+              <div class="campo">
+                <label for="emp-nombre">Nombre y apellido <span class="obligatorio">*</span></label>
+                <input id="emp-nombre" name="emp-nombre" type="text" placeholder="Ej. Luis Gómez" autocomplete="name" required>
+              </div>
+              <div class="campo">
+                <label for="emp-cedula">Cédula de identidad <span class="obligatorio">*</span></label>
+                <input id="emp-cedula" name="emp-cedula" type="text" placeholder="V-12345678" required>
+              </div>
+              <div class="campo">
+                <label for="emp-nacimiento">Fecha de nacimiento <span class="obligatorio">*</span></label>
+                <input id="emp-nacimiento" name="emp-nacimiento" type="date" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="emp-correo">Correo electrónico <span class="obligatorio">*</span></label>
+                <input id="emp-correo" name="emp-correo" type="email" placeholder="nombre@correo.com" autocomplete="email" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="emp-rif">RIF empresarial<span class="obligatorio">*</span></label>
+                <input id="emp-rif" name="emp-rif" type="text" placeholder="J-12345678-9" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="emp-rif">Registro mercantil<span class="obligatorio">*</span></label>
+                <input id="emp-rif" name="emp-rif" type="text" placeholder="123-45678" required>
+              </div>
+          </div>
+          <div class="formulario__pie">
+            <button class="btn btn--primario" type="submit">Enviar solicitud</button>
+            <p class="ayuda">Solo texto: no se adjuntan documentos ni archivos.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-profesional" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-profesional">
+    <div class="modal__caja">
+      <div class="modal__cabecera">
+        <h2 id="titulo-modal-profesional">Registro de profesional independiente</h2>
+        <button class="modal__cerrar" type="button" data-modal-cerrar aria-label="Cerrar formulario">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal__cuerpo">
+<p class="formulario__intro">Datos personales y de formación profesional</p>
+        <div class="aviso-exito" role="status">
+          <strong>Solicitud registrada</strong>
+          <p>Tus datos quedaron registrados exitosamente.</p>
+        </div>
+        <form data-formulario>
+          <div class="form-grid">
+              <p class="form-bloque">Datos personales</p>
+              <div class="campo">
+                <label for="pro-nombre">Nombre y apellido <span class="obligatorio">*</span></label>
+                <input id="pro-nombre" name="pro-nombre" type="text" placeholder="Ej. Luis Gómez" autocomplete="name" required>
+              </div>
+              <div class="campo">
+                <label for="pro-cedula">Cédula de identidad <span class="obligatorio">*</span></label>
+                <input id="pro-cedula" name="pro-cedula" type="text" placeholder="V-12345678" required>
+              </div>
+              <div class="campo">
+                <label for="pro-nacimiento">Fecha de nacimiento <span class="obligatorio">*</span></label>
+                <input id="pro-nacimiento" name="pro-nacimiento" type="date" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="pro-correo">Correo electrónico <span class="obligatorio">*</span></label>
+                <input id="pro-correo" name="pro-correo" type="email" placeholder="nombre@correo.com" autocomplete="email" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="pro-rif">RIF personal (en texto) <span class="obligatorio">*</span></label>
+                <input id="pro-rif" name="pro-rif" type="text" placeholder="V-12345678-9" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="pro-rif">Profesión<span class="obligatorio">*</span></label>
+                <input id="pro-rif" name="pro-rif" type="text" placeholder="Ingeníero Mecánico" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="pro-rif">Institución Universitaria<span class="obligatorio">*</span></label>
+                <input id="pro-rif" name="pro-rif" type="text" placeholder="Universidad del Zulia" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="pro-rif">Año de graduación<span class="obligatorio">*</span></label>
+                <input id="pro-rif" name="pro-rif" type="text" placeholder="2018" required>
+              </div>
+          </div>
+          <div class="formulario__pie">
+            <button class="btn btn--primario" type="submit">Enviar solicitud</button>
+            <p class="ayuda">Solo texto: no se adjuntan documentos ni archivos.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-proveedor" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-proveedor">
+    <div class="modal__caja">
+      <div class="modal__cabecera">
+        <h2 id="titulo-modal-proveedor">Registro de proveedor</h2>
+        <button class="modal__cerrar" type="button" data-modal-cerrar aria-label="Cerrar formulario">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal__cuerpo">
+<p class="formulario__intro">Datos del representante del negocio, RIF del negocio y registro mercantil.</p>
+        <div class="aviso-exito" role="status">
+          <strong>Solicitud registrada</strong>
+          <p>Tus datos quedaron registrados exitosamente</p>
+        </div>
+        <form data-formulario>
+          <div class="form-grid">
+              <p class="form-bloque">Datos personales</p>
+              <div class="campo">
+                <label for="prov-nombre">Nombre y apellido <span class="obligatorio">*</span></label>
+                <input id="prov-nombre" name="prov-nombre" type="text" placeholder="Ej. Luis Gómez" autocomplete="name" required>
+              </div>
+              <div class="campo">
+                <label for="prov-cedula">Cédula de identidad <span class="obligatorio">*</span></label>
+                <input id="prov-cedula" name="prov-cedula" type="text" placeholder="V-12345678" required>
+              </div>
+              <div class="campo">
+                <label for="prov-nacimiento">Fecha de nacimiento <span class="obligatorio">*</span></label>
+                <input id="prov-nacimiento" name="prov-nacimiento" type="date" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="prov-correo">Correo electrónico <span class="obligatorio">*</span></label>
+                <input id="prov-correo" name="prov-correo" type="email" placeholder="nombre@correo.com" autocomplete="email" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="prov-rif">RIF del negocio<span class="obligatorio">*</span></label>
+                <input id="prov-rif" name="prov-rif" type="text" placeholder="J-12345678-9" required>
+              </div>
+              <div class="campo campo--completo">
+                <label for="emp-rif">Registro mercantil<span class="obligatorio">*</span></label>
+                <input id="emp-rif" name="emp-rif" type="text" placeholder="123-45678" required>
+              </div>
+          </div>
+          <div class="formulario__pie">
+            <button class="btn btn--primario" type="submit">Enviar solicitud</button>
+            <p class="ayuda">Solo texto: no se adjuntan documentos ni archivos.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   </main>
 
   <footer class="site-footer">
@@ -203,7 +376,7 @@
       <div class="footer-grid">
         <div>
           <div class="footer-marca">
-            <img class="brand__mark" src="assets/img/logo-edificios.png" alt="" width="52" height="52">
+            <img class="brand__mark" src="images/logo-edificios.png" alt="" width="52" height="52">
             <span>
               <span class="brand__nombre">Cámara de la Construcción</span>
               <span class="brand__lema">Falcón · Venezuela</span>
@@ -251,6 +424,6 @@
     <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-3.2-.7-2.7-1.1-4.4-3.8-4.5-4-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5s.7 1.8.8 1.9c.1.1.1.3 0 .5s-.2.4-.3.6l-.5.5c-.2.2-.3.4-.1.7.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.7-.1s.7-.9.9-1.2c.2-.3.4-.2.7-.1l1.8.9c.3.2.5.2.6.4.1.1.1.7-.1 1.2z"/></svg>
   </a>
 
-  <script src="assets/js/main.js" defer></script>
+  <script src="agremiados.js" defer></script>
 </body>
 </html>
