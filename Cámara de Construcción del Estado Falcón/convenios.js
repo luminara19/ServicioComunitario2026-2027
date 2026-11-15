@@ -7,11 +7,11 @@ Cámara de Construcción Falcón — Interacciones del sitio
 var toggle = document.querySelector(".nav-toggle");
 var nav = document.querySelector(".main-nav");
 if (toggle  && nav) {
-toggle.addEventListener( "click ", function () {
-var abierto = toggle.getAttribute( "aria-expanded ") ===  "true ";
-toggle.setAttribute( "aria-expanded ", String(!abierto));
-toggle.setAttribute( "aria-label ", abierto ?  "Abrir menú " :  "Cerrar menú ");
-nav.classList.toggle( "is-open ", !abierto);
+toggle.addEventListener("click", function () {
+var abierto = toggle.getAttribute("aria-expanded") === "true";
+toggle.setAttribute("aria-expanded", String(!abierto));
+toggle.setAttribute("aria-label", abierto ? "Abrir menú" : "Cerrar menú");
+nav.classList.toggle("is-open", !abierto);
 });
 // Cerrar al pulsar Escape
  document.addEventListener("keydown", function (e) {
@@ -85,19 +85,37 @@ var abrirModal = function (id) {
 var m = document.getElementById(id);
 if (!m) return;
 if (modalAbierto  && modalAbierto !== m) {
-modalAbierto.classList.remove( "is-open ");
-modalAbierto.setAttribute( "aria-hidden ",  "true ");
+modalAbierto.classList.remove("is-open");
+modalAbierto.setAttribute("aria-hidden", "true");
 }
 modalAbierto = m;
-m.classList.add( "is-open ");
-m.setAttribute( "aria-hidden ",  "false ");
-overlay.classList.add( "is-visible ");
-document.body.classList.add( "modal-abierto ");
-var btn = m.querySelector( "[data-modal-cerrar] ");
+m.classList.add("is-open");
+m.setAttribute("aria-hidden", "false");
+overlay.classList.add("is-visible");
+document.body.classList.add("modal-abierto");
+var btn = m.querySelector("[data-modal-cerrar]");
 if (btn) btn.focus();
 };
-var cerrarModal = function () {
+// Modal listo para una nueva inscripción: formulario vacío y aviso oculto
+ var restaurarModal = function (modal) {
+   var form = modal.querySelector("[data-formulario]");
+   if (form) {
+     form.reset();
+     form.style.display = "";
+     form.querySelectorAll(".error-msg").forEach(function (el) { el.textContent = ""; });
+     form.querySelectorAll(".input-invalido").forEach(function (campo) {
+       campo.classList.remove("input-invalido");
+       campo.removeAttribute("aria-invalid");
+     });
+   }
+   var aviso = modal.querySelector(".aviso-exito");
+   if (aviso) aviso.classList.remove("is-visible");
+   var cuerpo = modal.querySelector(".modal__cuerpo");
+   if (cuerpo) cuerpo.scrollTop = 0;
+ };
+ var cerrarModal = function () {
    if (!modalAbierto) return;
+   restaurarModal(modalAbierto);
    modalAbierto.classList.remove("is-open");
    modalAbierto.setAttribute("aria-hidden", "true");
    modalAbierto = null;
@@ -125,7 +143,7 @@ var cerrarModal = function () {
  // Reglas de validación por campo (nombre, longitud, patrón, mensaje)
  var reglasValidacion = {
    nombre: {
-     selector: "[name='nombre'], [name='nombre_apellido']",
+     selector: "[name='luz-nombre'], [name='nombre'], [name='nombre_apellido']",
      requerido: true,
      min: 3,
      max: 80,
@@ -133,22 +151,22 @@ var cerrarModal = function () {
      mensajeError: "Ingrese nombre y apellido válidos (solo letras, mínimo 3 caracteres)."
    },
    cedula: {
-     selector: "[name='cedula'], [name='cedula_identidad']",
+     selector: "[name='luz-cedula'], [name='cedula'], [name='cedula_identidad']",
      requerido: true,
      min: 6,
-     max: 10,
-     patron: /^[0-9]+$/,
-     mensajeError: "La cédula debe contener solo números (entre 6 y 10 dígitos)."
+     max: 12,
+     patron: /^[VEJPvejp]?-?[0-9]{6,10}$/,
+     mensajeError: "La cédula debe tener entre 6 y 10 números (puede incluir la letra V o E)."
    },
    fecha: {
-     selector: "[name='fecha_nacimiento'], [name='fecha']",
+     selector: "[name='luz-nacimiento'], [name='fecha_nacimiento'], [name='fecha']",
      requerido: true,
      min: 10,
      max: 10,
      mensajeError: "Ingrese una fecha de nacimiento válida."
    },
    correo: {
-     selector: "[name='correo'], [name='email'], [name='correo_electronico']",
+     selector: "[name='luz-correo'], [name='correo'], [name='email'], [name='correo_electronico']",
      requerido: true,
      min: 5,
      max: 120,
@@ -156,7 +174,7 @@ var cerrarModal = function () {
      mensajeError: "Ingrese un correo electrónico válido."
    },
    curso: {
-     selector: "[name='curso'], [name='tipo_curso']",
+     selector: "[name='luz-curso'], [name='curso'], [name='tipo_curso']",
      requerido: true,
      min: 1,
      max: 50,

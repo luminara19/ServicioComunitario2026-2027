@@ -96,8 +96,29 @@ document.body.classList.add("modal-abierto");
 var btn = m.querySelector("[data-modal-cerrar]");
 if (btn) btn.focus();
 };
+// Deja el modal listo para una nueva inscripción: formulario vacío y aviso oculto
+var restaurarModal = function (modal) {
+var form = modal.querySelector("[data-formulario]");
+if (form) {
+form.reset();
+form.style.display = "";
+form.querySelectorAll(".error-msg").forEach(function (el) { el.textContent = ""; });
+form.querySelectorAll(".input-invalido").forEach(function (campo) {
+campo.classList.remove("input-invalido");
+campo.removeAttribute("aria-invalid");
+});
+form.querySelectorAll("[aria-invalid]").forEach(function (campo) {
+campo.removeAttribute("aria-invalid");
+});
+}
+var aviso = modal.querySelector(".aviso-exito");
+if (aviso) aviso.classList.remove("is-visible");
+var cuerpo = modal.querySelector(".modal__cuerpo");
+if (cuerpo) cuerpo.scrollTop = 0;
+};
 var cerrarModal = function () {
 if (!modalAbierto) return;
+restaurarModal(modalAbierto);
 modalAbierto.classList.remove("is-open");
 modalAbierto.setAttribute("aria-hidden", "true");
 modalAbierto = null;
@@ -128,115 +149,64 @@ profesional: "agremiados_profesional_independiente",
 proveedor: "agremiados_proveedor"
 };
 
-// Reglas de validación comunes
-var reglasComunes = {
-nombre: {
-selector: "[name='nombre']",
-requerido: true,
-min: 3,
-max: 80,
-patron: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/,
-mensajeError: "Ingrese nombre y apellido válidos (solo letras, mínimo 3 caracteres)."
-},
-cedula: {
-selector: "[name='cedula']",
-requerido: true,
-min: 6,
-max: 10,
-patron: /^[0-9]+$/,
-mensajeError: "La cédula debe contener solo números (entre 6 y 10 dígitos)."
-},
-fecha: {
-selector: "[name='fecha_nacimiento']",
-requerido: true,
-mensajeError: "Ingrese una fecha de nacimiento válida."
-},
-correo: {
-selector: "[name='correo']",
-requerido: true,
-min: 5,
-max: 120,
-patron: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-mensajeError: "Ingrese un correo electrónico válido."
-}
+// Patrones reutilizables
+var PATRONES = {
+nombre: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s.'-]+$/,
+cedula: /^[VEJPvejp]?-?[0-9]{6,10}$/,
+correo: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+rifEmpresa: /^[JVEjve]-?[0-9]{8,9}-?[0-9]?$/,
+rifNegocio: /^[Jj]-?[0-9]{8,9}-?[0-9]?$/,
+rifPersonal: /^[VEve]-?[0-9]{8,9}-?[0-9]?$/,
+registro: /^[0-9A-Za-zÁÉÍÓÚáéíóúÑÑüÜ][0-9A-Za-zÁÉÍÓÚáéíóúÑÑüÜ\-\/.\s]{3,39}$/,
+texto: /^[0-9A-Za-zÁÉÍÓÚáéíóúÑÑüÜ.,'()\/\-\s]+$/,
+anio: /^(19|20)[0-9]{2}$/
 };
 
-// Reglas específicas para cada tipo de formulario
-var reglasEspecificas = {
-empresa: {
-rif: {
-selector: "[name='rif_empresarial']",
-requerido: true,
-patron: /^[JVE]-\d{8,9}$/,
-mensajeError: "RIF inválido. Formato: J-123456789, V-123456789 o E-123456789."
-},
-registro_mercantil: {
-selector: "[name='registro_mercantil']",
-requerido: true,
-min: 5,
-max: 200,
-mensajeError: "Ingrese los datos del registro mercantil (mínimo 5 caracteres)."
-}
-},
-profesional: {
-rif: {
-selector: "[name='rif_personal']",
-requerido: true,
-patron: /^[VE]-\d{8,9}$/,
-mensajeError: "RIF inválido. Formato: V-123456789 o E-123456789."
-},
-profesion: {
-selector: "[name='profesion']",
-requerido: true,
-min: 3,
-max: 100,
-mensajeError: "Ingrese su profesión (mínimo 3 caracteres)."
-},
-institucion: {
-selector: "[name='institucion']",
-requerido: true,
-min: 3,
-max: 150,
-mensajeError: "Ingrese el nombre de la institución universitaria (mínimo 3 caracteres)."
-},
-anio_graduacion: {
-selector: "[name='anio_graduacion']",
-requerido: true,
-patron: /^(19|20)\d{2}$/,
-mensajeError: "Año de graduación inválido (formato: YYYY, entre 1900 y 2099)."
-}
-},
-proveedor: {
-rif: {
-selector: "[name='rif_negocio']",
-requerido: true,
-patron: /^J-\d{8,9}$/,
-mensajeError: "RIF inválido. Formato: J-123456789."
-},
-registro_mercantil: {
-selector: "[name='registro_mercantil']",
-requerido: true,
-min: 5,
-max: 200,
-mensajeError: "Ingrese los datos del registro mercantil (mínimo 5 caracteres)."
-}
-}
+// Reglas por formulario, usando los atributos name reales del HTML
+var reglasFormulario = {
+empresa: [
+{ name: "emp-nombre", min: 3, max: 80, patron: PATRONES.nombre, mensajeError: "Ingrese nombre y apellido válidos (solo letras, mínimo 3 caracteres)." },
+{ name: "emp-cedula", min: 6, max: 12, patron: PATRONES.cedula, mensajeError: "Cédula inválida. Formato: V-12345678." },
+{ name: "emp-nacimiento", tipo: "fecha" },
+{ name: "emp-correo", min: 5, max: 120, patron: PATRONES.correo, mensajeError: "Ingrese un correo electrónico válido." },
+{ name: "emp-rif", min: 5, max: 15, patron: PATRONES.rifEmpresa, mensajeError: "RIF inválido. Formato: J-12345678-9." },
+{ name: "emp-registro", min: 5, max: 40, patron: PATRONES.registro, mensajeError: "Ingrese un registro mercantil válido (mínimo 5 caracteres)." }
+],
+profesional: [
+{ name: "pro-nombre", min: 3, max: 80, patron: PATRONES.nombre, mensajeError: "Ingrese nombre y apellido válidos (solo letras, mínimo 3 caracteres)." },
+{ name: "pro-cedula", min: 6, max: 12, patron: PATRONES.cedula, mensajeError: "Cédula inválida. Formato: V-12345678." },
+{ name: "pro-nacimiento", tipo: "fecha" },
+{ name: "pro-correo", min: 5, max: 120, patron: PATRONES.correo, mensajeError: "Ingrese un correo electrónico válido." },
+{ name: "pro-rif", min: 5, max: 15, patron: PATRONES.rifPersonal, mensajeError: "RIF inválido. Formato: V-12345678-9." },
+{ name: "pro-profesion", min: 3, max: 100, patron: PATRONES.texto, mensajeError: "Ingrese su profesión (mínimo 3 caracteres)." },
+{ name: "pro-institucion", min: 3, max: 150, patron: PATRONES.texto, mensajeError: "Ingrese el nombre de la institución universitaria." },
+{ name: "pro-anio-graduacion", min: 4, max: 4, patron: PATRONES.anio, mensajeError: "Año de graduación inválido (formato: YYYY)." }
+],
+proveedor: [
+{ name: "prov-nombre", min: 3, max: 80, patron: PATRONES.nombre, mensajeError: "Ingrese nombre y apellido válidos (solo letras, mínimo 3 caracteres)." },
+{ name: "prov-cedula", min: 6, max: 12, patron: PATRONES.cedula, mensajeError: "Cédula inválida. Formato: V-12345678." },
+{ name: "prov-nacimiento", tipo: "fecha" },
+{ name: "prov-correo", min: 5, max: 120, patron: PATRONES.correo, mensajeError: "Ingrese un correo electrónico válido." },
+{ name: "prov-rif", min: 5, max: 15, patron: PATRONES.rifNegocio, mensajeError: "RIF inválido. Formato: J-12345678-9." },
+{ name: "prov-registro", min: 5, max: 40, patron: PATRONES.registro, mensajeError: "Ingrese un registro mercantil válido (mínimo 5 caracteres)." }
+]
 };
 
 // Obtiene o crea el contenedor de error junto al campo
 function obtenerContenedorError(campo) {
-var contenedor = campo.parentElement.querySelector(".error-msg");
-if (!contenedor) {
-contenedor = document.createElement("span");
-contenedor.className = "error-msg";
-contenedor.setAttribute("role", "alert");
-contenedor.style.color = "#c0392b";
-contenedor.style.fontSize = "0.85rem";
-contenedor.style.marginTop = "4px";
-contenedor.style.display = "block";
-campo.parentElement.appendChild(contenedor);
+var contenedor = campo.closest(".campo") || campo.parentElement;
+var errorEl = contenedor.querySelector(".error-msg");
+if (!errorEl) {
+errorEl = document.createElement("span");
+errorEl.className = "error-msg";
+errorEl.setAttribute("role", "alert");
+errorEl.style.color = "#c0392b";
+errorEl.style.fontSize = "0.85rem";
+errorEl.style.marginTop = "4px";
+errorEl.style.display = "block";
+contenedor.appendChild(errorEl);
 }
-return contenedor;
+return errorEl;
 }
 
 // Muestra u oculta el error de un campo
@@ -252,93 +222,74 @@ campo.removeAttribute("aria-invalid");
 }
 }
 
-// Valida un campo según sus reglas; retorna true si es válido
+// Valida un campo según su regla; retorna true si es válido
 function validarCampo(campo, regla) {
-var valor = (campo.value || "").trim();
+var valor = (regla.tipo === "fecha" ? campo.value : (campo.value || "").trim()) || "";
 
-// Campo vacío
-if (regla.requerido && valor.length === 0) {
+if (valor.length === 0) {
 mostrarError(campo, "Este campo es obligatorio.");
 return false;
 }
-if (!regla.requerido && valor.length === 0) {
+
+// Fecha: debe ser válida y no futura
+if (regla.tipo === "fecha") {
+var partes = valor.split("-");
+var fechaIngresada = new Date(valor + "T00:00:00");
+var hoy = new Date();
+hoy.setHours(23, 59, 59, 999);
+if (partes.length !== 3 || isNaN(fechaIngresada.getTime())) {
+mostrarError(campo, "Ingrese una fecha de nacimiento válida.");
+return false;
+}
+if (fechaIngresada > hoy) {
+mostrarError(campo, "La fecha no puede ser futura.");
+return false;
+}
 mostrarError(campo, "");
 return true;
 }
 
-// Longitud mínima
 if (regla.min && valor.length < regla.min) {
 mostrarError(campo, "Mínimo " + regla.min + " caracteres.");
 return false;
 }
-// Longitud máxima
 if (regla.max && valor.length > regla.max) {
 mostrarError(campo, "Máximo " + regla.max + " caracteres.");
 return false;
 }
-// Patrón (regex)
 if (regla.patron && !regla.patron.test(valor)) {
-mostrarError(campo, regla.mensajeError);
+mostrarError(campo, regla.mensajeError || "Formato inválido.");
 return false;
-}
-
-// Validación especial para fecha: no puede ser futura
-if (regla === reglasComunes.fecha) {
-var fechaIngresada = new Date(valor);
-var hoy = new Date();
-if (isNaN(fechaIngresada.getTime()) || fechaIngresada > hoy) {
-mostrarError(campo, "La fecha no puede ser futura.");
-return false;
-}
 }
 
 mostrarError(campo, "");
 return true;
 }
 
-// Determina el tipo de formulario basado en su ID o campos
+// Determina el tipo de formulario según el prefijo de sus campos
 function determinarTipoFormulario(form) {
-if (form.querySelector("[name='rif_empresarial']")) return "empresa";
-if (form.querySelector("[name='rif_personal']")) return "profesional";
-if (form.querySelector("[name='rif_negocio']")) return "proveedor";
+if (form.querySelector("[name^='emp-']")) return "empresa";
+if (form.querySelector("[name^='pro-']")) return "profesional";
+if (form.querySelector("[name^='prov-']")) return "proveedor";
 return null;
 }
 
 // Valida todo el formulario; retorna true si todos los campos son válidos
 function validarFormulario(form, tipo) {
 var todoValido = true;
-var camposInvalidos = [];
+var primerInvalido = null;
 
-// Validar campos comunes
-Object.keys(reglasComunes).forEach(function (clave) {
-var regla = reglasComunes[clave];
-var campo = form.querySelector(regla.selector);
+(reglasFormulario[tipo] || []).forEach(function (regla) {
+var campo = form.querySelector("[name='" + regla.name + "']");
 if (!campo) return;
-var esValido = validarCampo(campo, regla);
-if (!esValido) {
+if (!validarCampo(campo, regla)) {
 todoValido = false;
-camposInvalidos.push(campo);
+if (!primerInvalido) primerInvalido = campo;
 }
 });
-
-// Validar campos específicos según el tipo
-if (tipo && reglasEspecificas[tipo]) {
-Object.keys(reglasEspecificas[tipo]).forEach(function (clave) {
-var regla = reglasEspecificas[tipo][clave];
-var campo = form.querySelector(regla.selector);
-if (!campo) return;
-var esValido = validarCampo(campo, regla);
-if (!esValido) {
-todoValido = false;
-camposInvalidos.push(campo);
-}
-});
-}
 
 // Enfocar el primer campo inválido para mejor UX
-if (camposInvalidos.length > 0) {
-camposInvalidos[0].focus();
-}
+if (primerInvalido) primerInvalido.focus();
 
 return todoValido;
 }
@@ -375,29 +326,16 @@ return false;
 }
 
 // Recopila los valores del formulario en un objeto
-function recopilarDatos(form, tipo) {
+function recopilarDatos(form) {
 var datos = {};
-
-// Campos comunes
-Object.keys(reglasComunes).forEach(function (clave) {
-var regla = reglasComunes[clave];
-var campo = form.querySelector(regla.selector);
-if (campo) {
-datos[clave] = campo.value.trim();
+Array.prototype.forEach.call(form.elements, function (campo) {
+if (!campo.name) return;
+if (campo.type === "checkbox" || campo.type === "radio") {
+if (campo.checked) datos[campo.name] = campo.value;
+return;
 }
+datos[campo.name] = (campo.value || "").trim();
 });
-
-// Campos específicos según el tipo
-if (tipo && reglasEspecificas[tipo]) {
-Object.keys(reglasEspecificas[tipo]).forEach(function (clave) {
-var regla = reglasEspecificas[tipo][clave];
-var campo = form.querySelector(regla.selector);
-if (campo) {
-datos[clave] = campo.value.trim();
-}
-});
-}
-
 return datos;
 }
 
@@ -406,10 +344,8 @@ document.querySelectorAll("[data-formulario]").forEach(function (form) {
 var tipo = determinarTipoFormulario(form);
 if (!tipo) return;
 
-// Validar campos comunes
-Object.keys(reglasComunes).forEach(function (clave) {
-var regla = reglasComunes[clave];
-var campo = form.querySelector(regla.selector);
+(reglasFormulario[tipo] || []).forEach(function (regla) {
+var campo = form.querySelector("[name='" + regla.name + "']");
 if (!campo) return;
 
 campo.addEventListener("blur", function () {
@@ -421,24 +357,6 @@ mostrarError(campo, "");
 }
 });
 });
-
-// Validar campos específicos
-if (reglasEspecificas[tipo]) {
-Object.keys(reglasEspecificas[tipo]).forEach(function (clave) {
-var regla = reglasEspecificas[tipo][clave];
-var campo = form.querySelector(regla.selector);
-if (!campo) return;
-
-campo.addEventListener("blur", function () {
-validarCampo(campo, regla);
-});
-campo.addEventListener("input", function () {
-if (campo.classList.contains("input-invalido")) {
-mostrarError(campo, "");
-}
-});
-});
-}
 });
 
 /* =========================================================
@@ -448,26 +366,25 @@ document.querySelectorAll("[data-formulario]").forEach(function (form) {
 form.addEventListener("submit", function (e) {
 e.preventDefault();
 
-// 1) Validación nativa HTML5 (required, type=email, etc.)
-if (!form.checkValidity()) {
-form.reportValidity();
-return;
-}
-
-// 2) Determinar tipo de formulario
+// 1) Validación personalizada de campos y caracteres
 var tipo = determinarTipoFormulario(form);
 if (!tipo) {
 console.warn("No se pudo determinar el tipo de formulario");
 return;
 }
 
-// 3) Validación personalizada de campos y caracteres
 if (!validarFormulario(form, tipo)) {
 return; // NO procesa si falta o hay error en algún campo
 }
 
-// 4) Recopilar datos y guardar en memoria local
-var datos = recopilarDatos(form, tipo);
+// 2) Validación nativa HTML5 (required, type=email, etc.)
+if (!form.checkValidity()) {
+form.reportValidity();
+return;
+}
+
+// 3) Recopilar datos y guardar en memoria local
+var datos = recopilarDatos(form);
 var guardado = guardarEnMemoriaLocal(tipo, datos);
 
 if (!guardado) {
@@ -475,7 +392,7 @@ alert("No se pudieron guardar los datos. Intente nuevamente.");
 return;
 }
 
-// 5) Confirmar éxito en pantalla
+// 4) Confirmar éxito en pantalla
 var caja = form.closest(".modal");
 var aviso = caja && caja.querySelector(".aviso-exito");
 form.style.display = "none";
