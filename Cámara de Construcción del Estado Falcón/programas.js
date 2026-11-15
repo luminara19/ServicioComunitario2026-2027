@@ -96,8 +96,29 @@ document.body.classList.add("modal-abierto");
 var btn = m.querySelector("[data-modal-cerrar]");
 if (btn) btn.focus();
 };
+// Modal listo para un nuevo envío: formulario vacío y aviso oculto
+var restaurarModal = function (modal) {
+var form = modal.querySelector("[data-formulario]");
+if (form) {
+form.reset();
+form.style.display = "";
+form.querySelectorAll(".error-msg").forEach(function (el) { el.textContent = ""; });
+form.querySelectorAll(".input-invalido").forEach(function (campo) {
+campo.classList.remove("input-invalido");
+campo.removeAttribute("aria-invalid");
+});
+form.querySelectorAll("[aria-invalid]").forEach(function (campo) {
+campo.removeAttribute("aria-invalid");
+});
+}
+var aviso = modal.querySelector(".aviso-exito");
+if (aviso) aviso.classList.remove("is-visible");
+var cuerpo = modal.querySelector(".modal__cuerpo");
+if (cuerpo) cuerpo.scrollTop = 0;
+};
 var cerrarModal = function () {
 if (!modalAbierto) return;
+restaurarModal(modalAbierto);
 modalAbierto.classList.remove("is-open");
 modalAbierto.setAttribute("aria-hidden", "true");
 modalAbierto = null;
@@ -125,6 +146,61 @@ VALIDACIÓN DE CAMPOS Y CARACTERES REQUERIDOS - PROGRAMAS
 var CLAVES_STORAGE = {
 diagnostico: "programas_cuestionario_diagnostico",
 postulacion: "programas_planilla_postulacion"
+};
+
+// Patrones reutilizables
+var PATRONES = {
+nombre: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s.'-]+$/,
+cedula: /^[VEJPvejp]?-?[0-9]{6,10}$/,
+telefono: /^[0-9+\-\s()]{7,20}$/,
+texto: /^[0-9A-Za-zÁÉÍÓÚáéíóúÑÑüÜ.,'()\/\-\s]+$/,
+numeros: /^[0-9]+$/
+};
+
+// Reglas por formulario
+var reglasFormulario = {
+diagnostico: {
+campos: [
+{ name: "diag-sector", min: 3, max: 150, patron: PATRONES.texto, mensajeError: "Indique el sector (mínimo 3 caracteres)." },
+{ name: "diag-problema", min: 10, max: 1000 },
+{ name: "diag-propuesta", min: 10, max: 1000 }
+],
+radios: [
+"diag-parroquia",
+"diag-edad",
+"diag-ocupacion",
+"diag-aportantes",
+"diag-habitantes",
+"diag-calidad",
+"diag-perfil",
+"diag-estilo"
+],
+limitesCheckbox: {
+"diag-cualidades": 2,
+"diag-prioridades": 3
+}
+},
+postulacion: {
+campos: [
+{ name: "post-parroquia", tipo: "select" },
+{ name: "post-fecha", tipo: "fecha" },
+{ name: "post-sector", min: 3, max: 150, patron: PATRONES.texto, mensajeError: "Indique el sector (mínimo 3 caracteres)." },
+{ name: "post-direccion", min: 5, max: 250 },
+{ name: "post-familias", min: 1, max: 6, patron: PATRONES.numeros, mensajeError: "Ingrese un número válido de familias." },
+{ name: "post-enlace-nombre", min: 3, max: 80, patron: PATRONES.nombre, mensajeError: "Solo letras y espacios (mínimo 3 caracteres)." },
+{ name: "post-enlace-cedula", min: 6, max: 12, patron: PATRONES.cedula, mensajeError: "Cédula inválida. Formato: V-12345678." },
+{ name: "post-enlace-telefono", min: 7, max: 20, patron: PATRONES.telefono, mensajeError: "Formato de teléfono inválido." },
+{ name: "post-enlace-cargo", min: 3, max: 100, patron: PATRONES.texto, mensajeError: "Indique el cargo (mínimo 3 caracteres)." },
+{ name: "post-suplente-nombre", min: 3, max: 80, patron: PATRONES.nombre, mensajeError: "Solo letras y espacios (mínimo 3 caracteres)." },
+{ name: "post-suplente-cedula", min: 6, max: 12, patron: PATRONES.cedula, mensajeError: "Cédula inválida. Formato: V-12345678." },
+{ name: "post-suplente-telefono", min: 7, max: 20, patron: PATRONES.telefono, mensajeError: "Formato de teléfono inválido." },
+{ name: "post-descripcion", min: 10, max: 1000 },
+{ name: "post-voluntarios-cantidad", min: 1, max: 6, patron: PATRONES.numeros, mensajeError: "Ingrese un número válido de voluntarios." },
+{ name: "post-espacio-cual", min: 3, max: 200, patron: PATRONES.texto, mensajeError: "Indique el espacio (mínimo 3 caracteres)." }
+],
+radios: ["post-voluntarios", "post-espacio"],
+limitesCheckbox: {}
+}
 };
 
 // Obtiene o crea el contenedor de error junto al campo
@@ -158,25 +234,40 @@ campo.removeAttribute("aria-invalid");
 }
 }
 
-// Valida un campo de texto
-function validarCampoTexto(campo, min, max, patron, mensajeError) {
+// Valida un campo de texto, select o fecha
+function validarCampo(campo, regla) {
 var valor = (campo.value || "").trim();
+
 if (valor.length === 0) {
-mostrarError(campo, "Este campo es obligatorio.");
+mostrarError(campo, regla.tipo === "select" ? "Debe seleccionar una opción." : "Este campo es obligatorio.");
 return false;
 }
-if (min && valor.length < min) {
-mostrarError(campo, "Mínimo " + min + " caracteres.");
+
+// Fecha: debe ser válida
+if (regla.tipo === "fecha") {
+var partes = valor.split("-");
+var fecha = new Date(valor + "T00:00:00");
+if (partes.length !== 3 || isNaN(fecha.getTime())) {
+mostrarError(campo, "Ingrese una fecha válida.");
 return false;
 }
-if (max && valor.length > max) {
-mostrarError(campo, "Máximo " + max + " caracteres.");
+mostrarError(campo, "");
+return true;
+}
+
+if (regla.min && valor.length < regla.min) {
+mostrarError(campo, "Mínimo " + regla.min + " caracteres.");
 return false;
 }
-if (patron && !patron.test(valor)) {
-mostrarError(campo, mensajeError || "Formato inválido.");
+if (regla.max && valor.length > regla.max) {
+mostrarError(campo, "Máximo " + regla.max + " caracteres.");
 return false;
 }
+if (regla.patron && !regla.patron.test(valor)) {
+mostrarError(campo, regla.mensajeError || "Formato inválido.");
+return false;
+}
+
 mostrarError(campo, "");
 return true;
 }
@@ -218,180 +309,45 @@ checkboxes.forEach(function (cb) { mostrarError(cb, ""); });
 return true;
 }
 
-// Valida un select
-function validarSelect(campo) {
-var valor = (campo.value || "").trim();
-if (!valor || valor === "" || valor === "Selecciona una opción") {
-mostrarError(campo, "Debe seleccionar una opción.");
-return false;
-}
-mostrarError(campo, "");
-return true;
-}
-
-// Determina el tipo de formulario
+// Determina el tipo de formulario según el prefijo de sus campos
 function determinarTipoFormulario(form) {
-if (form.querySelector("[name='parroquia_diagnostico']") || 
-    form.querySelector("[name='edad_encuestado']")) {
-return "diagnostico";
-}
-if (form.querySelector("[name='nombre_sector']") || 
-    form.querySelector("[name='enlace_principal_nombre']")) {
-return "postulacion";
-}
+if (form.querySelector("[name^='diag-']")) return "diagnostico";
+if (form.querySelector("[name^='post-']")) return "postulacion";
 return null;
 }
 
-// Valida el formulario de diagnóstico participativo
-function validarFormularioDiagnostico(form) {
+// Valida el formulario según las reglas de su tipo
+function validarFormulario(form, tipo) {
+var reglas = reglasFormulario[tipo];
+if (!reglas) return false;
+
 var todoValido = true;
-var camposInvalidos = [];
-
-// Bloque I - Campos de texto y selects
-var camposTexto = [
-{ name: "sector_comunidad", min: 3, max: 150 },
-{ name: "problema_grave", min: 10, max: 500 },
-{ name: "propuesta_obra", min: 10, max: 500 }
-];
-
-camposTexto.forEach(function (cfg) {
-var campo = form.querySelector("[name='" + cfg.name + "']");
-if (campo) {
-if (!validarCampoTexto(campo, cfg.min, cfg.max)) {
+var primerInvalido = null;
+var marcarInvalido = function (campo) {
 todoValido = false;
-camposInvalidos.push(campo);
-}
-}
+if (!primerInvalido) primerInvalido = campo;
+};
+
+(reglas.campos || []).forEach(function (regla) {
+var campo = form.querySelector("[name='" + regla.name + "']");
+if (!campo) return;
+if (!validarCampo(campo, regla)) marcarInvalido(campo);
 });
 
-// Selects
-var selects = ["parroquia_diagnostico"];
-selects.forEach(function (name) {
-var campo = form.querySelector("[name='" + name + "']");
-if (campo) {
-if (!validarSelect(campo)) {
-todoValido = false;
-camposInvalidos.push(campo);
-}
-}
-});
-
-// Radio groups (todos requeridos)
-var radios = [
-"edad_encuestado",
-"ocupacion_principal",
-"personas_aportan",
-"personas_viven",
-"calidad_vida",
-"agua_potable",
-"aseo_urbano",
-"alumbrado",
-"vialidad",
-"transporte_publico",
-"seguridad_ciudadana",
-"mantenimiento_areas",
-"perfil_alcalde",
-"estilo_gestion",
-"iniciativa_economia",
-"via_participacion"
-];
-
-radios.forEach(function (name) {
+(reglas.radios || []).forEach(function (name) {
 if (!validarRadioGrupo(name, form)) {
-todoValido = false;
+marcarInvalido(form.querySelector("input[type='radio'][name='" + name + "']"));
 }
 });
 
-// Checkbox groups con límites específicos
-// Fuentes de ingresos: sin límite (puede marcar varias)
-if (!validarCheckboxGrupo("fuentes_ingresos", form, null)) {
-todoValido = false;
+Object.keys(reglas.limitesCheckbox || {}).forEach(function (name) {
+if (!validarCheckboxGrupo(name, form, reglas.limitesCheckbox[name])) {
+marcarInvalido(form.querySelector("input[type='checkbox'][name='" + name + "']"));
 }
-
-// Cualidad del líder: máximo 2
-if (!validarCheckboxGrupo("cualidad_lider", form, 2)) {
-todoValido = false;
-}
-
-// Tres áreas prioritarias: máximo 3
-if (!validarCheckboxGrupo("areas_prioritarias", form, 3)) {
-todoValido = false;
-}
-
-// Proyectos juventud: sin límite
-if (!validarCheckboxGrupo("proyectos_juventud", form, null)) {
-todoValido = false;
-}
+});
 
 // Enfocar primer campo inválido
-if (camposInvalidos.length > 0) {
-camposInvalidos[0].focus();
-}
-
-return todoValido;
-}
-
-// Valida el formulario de planilla de postulación
-function validarFormularioPostulacion(form) {
-var todoValido = true;
-var camposInvalidos = [];
-
-// Campos de texto
-var camposTexto = [
-{ name: "nombre_sector", min: 3, max: 150 },
-{ name: "direccion_sector", min: 5, max: 300 },
-{ name: "cantidad_familias", min: 1, max: 10, patron: /^[0-9]+$/, mensajeError: "Ingrese un número válido." },
-{ name: "enlace_principal_nombre", min: 3, max: 80, patron: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/, mensajeError: "Solo letras y espacios." },
-{ name: "enlace_principal_cedula", min: 6, max: 10, patron: /^[0-9]+$/, mensajeError: "Solo números (6-10 dígitos)." },
-{ name: "enlace_principal_telefono", min: 10, max: 15, patron: /^[0-9+\-\s()]+$/, mensajeError: "Formato de teléfono inválido." },
-{ name: "enlace_principal_cargo", min: 3, max: 100 },
-{ name: "enlace_suplente_nombre", min: 3, max: 80, patron: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/, mensajeError: "Solo letras y espacios." },
-{ name: "enlace_suplente_cedula", min: 6, max: 10, patron: /^[0-9]+$/, mensajeError: "Solo números (6-10 dígitos)." },
-{ name: "enlace_suplente_telefono", min: 10, max: 15, patron: /^[0-9+\-\s()]+$/, mensajeError: "Formato de teléfono inválido." },
-{ name: "problematica_descripcion", min: 10, max: 1000 },
-{ name: "cantidad_voluntarios", min: 1, max: 10, patron: /^[0-9]+$/, mensajeError: "Ingrese un número válido." },
-{ name: "espacio_disponible", min: 3, max: 200 }
-];
-
-camposTexto.forEach(function (cfg) {
-var campo = form.querySelector("[name='" + cfg.name + "']");
-if (campo) {
-if (!validarCampoTexto(campo, cfg.min, cfg.max, cfg.patron, cfg.mensajeError)) {
-todoValido = false;
-camposInvalidos.push(campo);
-}
-}
-});
-
-// Selects
-var selects = ["parroquia_postulacion", "fecha_solicitud"];
-selects.forEach(function (name) {
-var campo = form.querySelector("[name='" + name + "']");
-if (campo) {
-if (!validarSelect(campo)) {
-todoValido = false;
-camposInvalidos.push(campo);
-}
-}
-});
-
-// Radio groups
-var radios = ["voluntarios_disponibles", "espacio_fisico"];
-radios.forEach(function (name) {
-if (!validarRadioGrupo(name, form)) {
-todoValido = false;
-}
-});
-
-// Checkbox groups - Áreas de atención (3 ejes, sin límite)
-if (!validarCheckboxGrupo("areas_atencion", form, null)) {
-todoValido = false;
-}
-
-// Enfocar primer campo inválido
-if (camposInvalidos.length > 0) {
-camposInvalidos[0].focus();
-}
+if (primerInvalido) primerInvalido.focus();
 
 return todoValido;
 }
@@ -428,7 +384,7 @@ return false;
 }
 
 // Recopila los valores del formulario en un objeto
-function recopilarDatos(form, tipo) {
+function recopilarDatos(form) {
 var datos = {};
 
 // Campos de texto, selects y radios
@@ -463,32 +419,18 @@ return datos;
 }
 
 // Limitar selección de checkboxes en tiempo real
-function limitarSeleccionCheckboxes(form) {
-// Cualidad del líder: máximo 2
-var cualidadLider = form.querySelectorAll("input[type='checkbox'][name='cualidad_lider']");
-cualidadLider.forEach(function (cb) {
+function limitarSeleccionCheckboxes(form, limites) {
+Object.keys(limites).forEach(function (name) {
+form.querySelectorAll("input[type='checkbox'][name='" + name + "']").forEach(function (cb) {
 cb.addEventListener("change", function () {
-var seleccionados = form.querySelectorAll("input[type='checkbox'][name='cualidad_lider']:checked");
-if (seleccionados.length > 2) {
+var seleccionados = form.querySelectorAll("input[type='checkbox'][name='" + name + "']:checked");
+if (seleccionados.length > limites[name]) {
 cb.checked = false;
-mostrarError(cb, "Máximo 2 opciones permitidas.");
+mostrarError(cb, "Máximo " + limites[name] + " opciones permitidas.");
 } else {
 mostrarError(cb, "");
 }
 });
-});
-
-// Áreas prioritarias: máximo 3
-var areasPrioritarias = form.querySelectorAll("input[type='checkbox'][name='areas_prioritarias']");
-areasPrioritarias.forEach(function (cb) {
-cb.addEventListener("change", function () {
-var seleccionados = form.querySelectorAll("input[type='checkbox'][name='areas_prioritarias']:checked");
-if (seleccionados.length > 3) {
-cb.checked = false;
-mostrarError(cb, "Máximo 3 opciones permitidas.");
-} else {
-mostrarError(cb, "");
-}
 });
 });
 }
@@ -526,9 +468,8 @@ var tipo = determinarTipoFormulario(form);
 if (!tipo) return;
 
 agregarValidacionTiempoReal(form);
-if (tipo === "diagnostico") {
-limitarSeleccionCheckboxes(form);
-}
+var limites = (reglasFormulario[tipo] || {}).limitesCheckbox || {};
+if (Object.keys(limites).length) limitarSeleccionCheckboxes(form, limites);
 });
 
 /* =========================================================
@@ -538,33 +479,26 @@ document.querySelectorAll("[data-formulario]").forEach(function (form) {
 form.addEventListener("submit", function (e) {
 e.preventDefault();
 
-// 1) Validación nativa HTML5
-if (!form.checkValidity()) {
-form.reportValidity();
-return;
-}
-
-// 2) Determinar tipo de formulario
+// 1) Determinar tipo de formulario
 var tipo = determinarTipoFormulario(form);
 if (!tipo) {
 console.warn("No se pudo determinar el tipo de formulario");
 return;
 }
 
-// 3) Validación personalizada según el tipo
-var esValido = false;
-if (tipo === "diagnostico") {
-esValido = validarFormularioDiagnostico(form);
-} else if (tipo === "postulacion") {
-esValido = validarFormularioPostulacion(form);
-}
-
-if (!esValido) {
+// 2) Validación personalizada según el tipo
+if (!validarFormulario(form, tipo)) {
 return; // NO procesa si falta o hay error en algún campo
 }
 
+// 3) Validación nativa (required, selects, etc.)
+if (!form.checkValidity()) {
+form.reportValidity();
+return;
+}
+
 // 4) Recopilar datos y guardar en memoria local
-var datos = recopilarDatos(form, tipo);
+var datos = recopilarDatos(form);
 var guardado = guardarEnMemoriaLocal(tipo, datos);
 
 if (!guardado) {
